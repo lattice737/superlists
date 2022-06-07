@@ -1187,3 +1187,24 @@ console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message f
 UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
 console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "http://localhost:8000"
 1654640124786	Marionette	INFO	Stopped listening on port 50173
+1654640794255	geckodriver	INFO	Listening on 127.0.0.1:50254
+1654640794259	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "--marionette" "--remote-debugging-port" "50255" "--remote-allow-hosts" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/bq/5q92tn1x4zl2m0_sfpvfsr7w0000gn/T/rust_mozprofile30EQun"
+2022-06-07 17:26:34.525 plugin-container[13119:72259] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2022-06-07 17:26:34.525 plugin-container[13119:72259] nil host used in call to allowsAnyHTTPSCertificateForHost:
+2022-06-07 17:26:34.527 plugin-container[13119:72259] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2022-06-07 17:26:34.527 plugin-container[13119:72259] nil host used in call to allowsAnyHTTPSCertificateForHost:
+2022-06-07 17:26:34.527 plugin-container[13119:72257] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2022-06-07 17:26:34.527 plugin-container[13119:72257] nil host used in call to allowsAnyHTTPSCertificateForHost:
+1654640794529	Marionette	INFO	Marionette enabled
+WebDriver BiDi listening on ws://localhost:50255
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /var/folders/bq/5q92tn1x4zl2m0_sfpvfsr7w0000gn/T/rust_mozprofile30EQun/search.json.mozlz4", (void 0)))
+console.error: BackgroundUpdate: 
+  _reasonsToNotScheduleUpdates: Failed to check for Maintenance Service Registry Key: [Exception... "Component returned failure code: 0x80004001 (NS_ERROR_NOT_IMPLEMENTED) [nsIUpdateProcessor.getServiceRegKeyExists]"  nsresult: "0x80004001 (NS_ERROR_NOT_IMPLEMENTED)"  location: "JS frame :: resource://gre/modules/BackgroundUpdate.jsm :: _reasonsToNotScheduleUpdates :: line 241"  data: no]
+1654640795178	Marionette	INFO	Listening on port 50265
+DevTools listening on ws://localhost:50255/devtools/browser/f8940ab0-9e19-44f1-a782-2e4318d3fcc6
+Read port: 50265
+1654640795205	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "http://localhost:8000"
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "http://localhost:8000"
+1654640799327	Marionette	INFO	Stopped listening on port 50265
