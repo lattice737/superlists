@@ -43,8 +43,9 @@ class NewListTest(TestCase):
     def test_redirect_after_POST(self):
 
         response = self.client.post("/lists/new", data={'item_text': 'A new list item'})
+        new_list = List.objects.first()
 
-        self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
+        self.assertRedirects(response, f"/lists/{new_list.id}/")
 
 class ListAndItemModelTest(TestCase):
 
@@ -77,21 +78,69 @@ class ListAndItemModelTest(TestCase):
         self.assertEqual(second_saved_item.list, list_)
 
 
-class LiveViewTest(TestCase):
+class ListViewTest(TestCase):
 
     def test_list_template(self):
 
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        list_ = List.objects.create()
+        response = self.client.get(f"/lists/{list_.id}/")
+
         self.assertTemplateUsed(response, 'list.html')
 
-    def test_display_list(self):
+    def test_correct_list_to_template(self):
 
-        list_ = List.objects.create()
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
 
-        Item.objects.create(text='itemey 1', list=list_)
-        Item.objects.create(text='itemey 2', list=list_)
+        response = self.client.get(f"/lists/{correct_list.id}/")
 
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertEqual(response.context['list'], correct_list)
 
-        self.assertContains(response, 'itemey 1') # method can handle response binary; content decoding deprecated
+    def test_display_unique_list_items(self):
+
+        correct_list = List.objects.create()
+        Item.objects.create(text='itemey 1', list=correct_list)
+        Item.objects.create(text='itemey 2', list=correct_list)
+
+        other_list = List.objects.create()
+        Item.objects.create(text='other list item 1', list=other_list)
+        Item.objects.create(text='other list item 2', list=other_list)
+
+        response = self.client.get(f"/lists/{correct_list.id}/")
+
+        self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
+        self.assertNotContains(response, 'other list item 1')
+        self.assertNotContains(response, 'other list item 2')
+
+
+class NewItemTest(TestCase):
+
+    def test_existing_list_POST_request(self):
+
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+
+        self.client.post(
+            f"/lists/{correct_list.id}/add_item",
+            data={'item_text': 'A new item for an existing list'}
+        )
+
+        self.assertEqual(Item.objects.count(), 1)
+
+        new_item = Item.objects.first()
+
+        self.assertEqual(new_item.text, 'A new item for an existing list')
+        self.assertEqual(new_item.list, correct_list)
+
+    def test_list_view_redirect(self):
+
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+
+        response = self.client.post(
+            f"/lists/{correct_list.id}/add_item",
+            data={'item_text': 'A new item for an existing list'}
+        )
+
+        self.assertRedirects(response, f"/lists/{correct_list.id}/")
