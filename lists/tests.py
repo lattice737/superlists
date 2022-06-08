@@ -5,7 +5,7 @@ from django.http import HttpRequest
 from django.test import TestCase
 from django.urls import resolve
 
-from lists.views import home_page
+from lists.views import home_page # deprecated for test client
 from lists.models import Item
 
 @mock.patch('django.template.context_processors.get_token', mock.Mock(return_value='test_token'))
@@ -48,7 +48,7 @@ class HomePageTest(TestCase):
         response = home_page(request)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
 
     def test_save_condition(self):
 
@@ -56,16 +56,6 @@ class HomePageTest(TestCase):
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_display_list(self):
-
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
-        request = HttpRequest()
-        response = home_page(request)
-
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
 
 class ItemModelTest(TestCase):
 
@@ -87,4 +77,20 @@ class ItemModelTest(TestCase):
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
         self.assertEqual(second_saved_item.text, 'The second list item')
 
-# Create your tests here.
+
+class LiveViewTest(TestCase):
+
+    def test_list_template(self):
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'list.html')
+
+    def test_display_list(self):
+
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+
+        self.assertContains(response, 'itemey 1') # method can handle response binary; content decoding deprecated
+        self.assertContains(response, 'itemey 2')
