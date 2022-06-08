@@ -29,15 +29,43 @@ class HomePageTest(TestCase):
         
         request = HttpRequest()
         request.method = "POST"
-        request.POST['item_text'] = "1: Buy peacock feathers"
+        request.POST['item_text'] = "A new list item"
         
         response = home_page(request)
-        self.assertIn('1: Buy peacock feathers', response.content.decode())
-        
-        context = {'new_item_text': '1: Buy peacock feathers'}
-        expected_html = render(request, 'home.html', context)
 
-        self.assertEqual(response.content.decode(), expected_html.content.decode()) # FIXME content != expected_html
+        self.assertEqual(Item.objects.count(), 1)
+        
+        new_item = Item.objects.first()
+
+        self.assertEqual(new_item.text, "A new list item")
+       
+    def test_redirect_after_POST(self):
+
+        request = HttpRequest()
+        request.method = "POST"
+        request.POST['item_text'] = 'A new list item'
+
+        response = home_page(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    def test_save_condition(self):
+
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_display_list(self):
+
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertIn('itemey 1', response.content.decode())
+        self.assertIn('itemey 2', response.content.decode())
 
 class ItemModelTest(TestCase):
 
