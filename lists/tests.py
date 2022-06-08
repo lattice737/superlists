@@ -10,7 +10,6 @@ from lists.models import Item
 
 @mock.patch('django.template.context_processors.get_token', mock.Mock(return_value='test_token'))
 class HomePageTest(TestCase):
-    '''Lists app unit testing class'''
 
     def test_root(self):
         
@@ -24,38 +23,28 @@ class HomePageTest(TestCase):
         expected_html = render(request, 'home.html')
 
         self.assertEqual(response.content.decode(), expected_html.content.decode())
+       
+
+class NewListTest(TestCase):
 
     def test_POST_request(self):
-        
-        request = HttpRequest()
-        request.method = "POST"
-        request.POST['item_text'] = "A new list item"
-        
-        response = home_page(request)
+
+        self.client.post(
+            "/lists/new", # no trailing slash -- action URLs that modify the database
+            data={'item_text': 'A new list item'},
+        )
 
         self.assertEqual(Item.objects.count(), 1)
-        
+
         new_item = Item.objects.first()
 
-        self.assertEqual(new_item.text, "A new list item")
-       
+        self.assertEqual(new_item.text, 'A new list item')
+
     def test_redirect_after_POST(self):
 
-        request = HttpRequest()
-        request.method = "POST"
-        request.POST['item_text'] = 'A new list item'
+        response = self.client.post("/lists/new", data={'item_text': 'A new list item'})
 
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
-
-    def test_save_condition(self):
-
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
-
+        self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
 
 class ItemModelTest(TestCase):
 
