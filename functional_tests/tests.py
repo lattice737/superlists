@@ -1,4 +1,5 @@
 import time
+import os
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import LiveServerTestCase # replaces unittest.TestCase
@@ -8,8 +9,14 @@ from selenium import webdriver
 class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
+
         self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(10)
+        self.browser.implicitly_wait(5)
+
+        staging_server = os.environ.get('STAGING_SERVER')
+
+        if staging_server:
+            self.live_server_url = f"http://{staging_server}"
 
     def tearDown(self):
         self.browser.quit()
@@ -21,7 +28,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         self.assertIn(row_text, [row.text for row in rows])
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def test_list_start_and_load(self):
 
         # User goes to app homepage
         
