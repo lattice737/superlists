@@ -16,16 +16,16 @@ class HomePageTest(TestCase):
         found = resolve("/")
         self.assertEqual(found.func, home_page)
 
-    def test_html(self):
+    #def test_html(self):
 
-        response = self.client.get("/")
+    #    response = self.client.get("/")
 
-        html = response.content.decode('utf8')
+    #    html = response.content.decode('utf8')
         
-        self.assertTrue(html.startswith('<!DOCTYPE html>'))
-        self.assertIn('<title>To-Do lists</title>', html)
-        self.assertTrue(html.strip().endswith('</html>'))
-        self.assertTemplateUsed(response, 'home.html')
+    #    self.assertTrue(html.startswith('<!DOCTYPE html>'))
+    #    self.assertIn('<title>To-Do lists</title>', html)
+    #    self.assertTrue(html.strip().endswith('</html>'))
+    #    self.assertTemplateUsed(response, 'home.html')
 
 class NewListTest(TestCase):
 
