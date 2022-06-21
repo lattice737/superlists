@@ -18,12 +18,14 @@ class HomePageTest(TestCase):
 
     def test_html(self):
 
-        request = HttpRequest()
-        response = home_page(request)
-        expected_html = render(request, 'home.html')
+        response = self.client.get("/")
 
-        self.assertEqual(response.content.decode(), expected_html.content.decode())
-       
+        html = response.content.decode('utf8')
+        
+        self.assertTrue(html.startswith('<!DOCTYPE html>'))
+        self.assertIn('<title>To-Do lists</title>', html)
+        self.assertTrue(html.strip().endswith('</html>'))
+        self.assertTemplateUsed(response, 'home.html')
 
 class NewListTest(TestCase):
 
