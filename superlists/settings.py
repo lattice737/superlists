@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# TESTING SOLUTION https://stackoverflow.com/questions/70679571/how-do-i-set-a-wildcard-for-csrf-trusted-origins-in-django
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Application definition
 
 INSTALLED_APPS = [

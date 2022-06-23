@@ -8,7 +8,7 @@ from django.urls import resolve
 from lists.views import home_page # deprecated for test client
 from lists.models import Item, List
 
-#@mock.patch('django.template.context_processors.get_token', mock.Mock(return_value='test_token'))
+@mock.patch('django.template.context_processors.get_token', mock.Mock(return_value='test_token'))
 class HomePageTest(TestCase):
 
     def test_root(self):
