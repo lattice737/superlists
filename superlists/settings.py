@@ -26,7 +26,7 @@ SECRET_KEY = '+4+$1i_1u(wh%ies$alq359oepwbattm@t&1f*k9vsl0b3zu1n'
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['http://*.workspaceonline.net']
 
 # TESTING SOLUTION https://stackoverflow.com/questions/70679571/how-do-i-set-a-wildcard-for-csrf-trusted-origins-in-django
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
