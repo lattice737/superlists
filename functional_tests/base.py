@@ -43,3 +43,19 @@ class FunctionalTest(StaticLiveServerTestCase):
                 if elapsed > MAX_WAIT: raise exception
 
                 time.sleep(0.5)
+
+    def wait_for(self, function):
+
+        start_time = time.time()
+
+        while True:
+
+            try: return function()
+
+            except (AssertionError, WebDriverException) as exception:
+
+                elapsed = time.time() - start_time
+
+                if elapsed > MAX_WAIT: raise exception
+
+                time.sleep(0.5)
