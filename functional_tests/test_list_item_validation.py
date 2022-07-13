@@ -17,7 +17,7 @@ class ItemValidationTest(FunctionalTest):
         self.wait_for(
             lambda: self.assertEqual(
                 self.browser.find_element_by_css_selector('.has-error').text,
-                "Empty list items will not be added",
+                "Empty items will not be entered",
             ),
         )
 

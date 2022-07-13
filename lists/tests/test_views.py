@@ -1,5 +1,6 @@
 from unittest import mock
 
+from django.utils.html import escape # parses str argument to HTML-escaped string
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.test import TestCase
@@ -16,16 +17,16 @@ class HomePageTest(TestCase):
         found = resolve("/")
         self.assertEqual(found.func, home_page)
 
-    #def test_html(self):
+    def test_html(self):
 
-    #    response = self.client.get("/")
+        response = self.client.get("/")
 
-    #    html = response.content.decode('utf8')
+        html = response.content.decode('utf8')
         
-    #    self.assertTrue(html.startswith('<!DOCTYPE html>'))
-    #    self.assertIn('<title>To-Do lists</title>', html)
-    #    self.assertTrue(html.strip().endswith('</html>'))
-    #    self.assertTemplateUsed(response, 'home.html')
+        self.assertTrue(html.startswith('<!DOCTYPE html>'))
+        self.assertIn('<title>To-Do lists</title>', html)
+        self.assertTrue(html.strip().endswith('</html>'))
+        self.assertTemplateUsed(response, 'home.html')
 
 class NewListTest(TestCase):
 
@@ -49,6 +50,23 @@ class NewListTest(TestCase):
 
         self.assertRedirects(response, f"/lists/{new_list.id}/")
 
+    def test_validation_errors_sent_back_to_home(self):
+
+        response = self.client.post('/lists/new', data={'item_text': ''})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+
+        expected_error = "Empty items will not be entered"
+
+        self.assertContains(response, expected_error)
+
+    def test_no_save_invalid_items(self):
+
+        self.client.post('/lists/new', data={'item_text': ''})
+        
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
 
 class ListViewTest(TestCase):
 
