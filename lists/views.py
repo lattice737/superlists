@@ -19,7 +19,7 @@ def view_list(request, list_id):
             item.full_clean()
             item.save()
 
-            return redirect(f"/lists/{list_.id}/")
+            return redirect(list_)
 
         except ValidationError:
 
@@ -44,5 +44,5 @@ def new_list(request):
         
         return render(request, 'home.html', {'error': error})
 
-    return redirect(f"/lists/{list_.id}/")
+    return redirect(list_)
 
