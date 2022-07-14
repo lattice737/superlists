@@ -2,11 +2,10 @@ import time
 import os
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 from selenium import webdriver
 
-MAX_WAIT = 10
+MAX_WAIT = 5
 
 class FunctionalTest(StaticLiveServerTestCase):
 
