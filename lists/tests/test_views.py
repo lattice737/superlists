@@ -1,14 +1,12 @@
 from unittest import mock
 
 from django.utils.html import escape # parses str argument to HTML-escaped string
-from django.shortcuts import render
-from django.http import HttpRequest
 from django.test import TestCase
 from django.urls import resolve
-from lists.forms import ItemForm
 
-from lists.views import home_page # deprecated for test client
+from lists.forms import ItemForm, EMPTY_ITEM_ERROR
 from lists.models import Item, List
+from lists.views import home_page # deprecated for test client
 
 @mock.patch('django.template.context_processors.get_token', mock.Mock(return_value='test_token'))
 class HomePageTest(TestCase):
@@ -45,23 +43,29 @@ class NewListTest(TestCase):
 
         self.assertRedirects(response, f"/lists/{new_list.id}/")
 
-    def test_validation_errors_sent_back_to_home(self):
-
-        response = self.client.post('/lists/new', data={'text': ''})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'home.html')
-
-        expected_error = "Empty items will not be entered"
-
-        self.assertContains(response, expected_error)
-
     def test_no_save_invalid_items(self):
 
         self.client.post('/lists/new', data={'text': ''})
         
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
+
+    def test_invalid_input_renders_home(self):
+
+        response = self.client.post('/lists/new', data={'text': ''})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+
+    def test_validation_errors_displayed(self):
+
+        response = self.client.post('/lists/new', data={'text': ''})
+        self.assertContains(response, EMPTY_ITEM_ERROR)
+
+    def test_invalid_input_passes_form_to_template(self):
+
+        response = self.client.post('/lists/new', data={'text': ''})
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 class ListViewTest(TestCase):
 
@@ -81,6 +85,14 @@ class ListViewTest(TestCase):
 
         self.assertEqual(response.context['list'], correct_list)
 
+    def test_display_item_form(self):
+
+        list_ = List.objects.create()
+        response = self.client.get(f"/lists/{list_.id}/")
+
+        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertContains(response, 'name="text"')
+
     def test_display_unique_list_items(self):
 
         correct_list = List.objects.create()
@@ -98,7 +110,7 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other list item 1')
         self.assertNotContains(response, 'other list item 2')
 
-    def test_save_POST_to_existing_list(self):
+    def test_POST_saves_to_existing_list(self):
 
         other_list = List.objects.create()
         correct_list = List.objects.create()
@@ -127,18 +139,29 @@ class ListViewTest(TestCase):
 
         self.assertRedirects(response, f"/lists/{correct_list.id}/")
 
-    def test_validation_errors_on_lists_page(self):
+    def post_invalid_input(self):
 
         list_ = List.objects.create()
+        return self.client.post(f"/lists/{list_.id}/", data={'text': ''})
 
-        response = self.client.post(
-            f"/lists/{list_.id}/",
-            data={'text': ''},
-        )
+    def test_nothing_saved_to_db_with_invalid_input(self):
+
+        self.post_invalid_input()
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_list_template_rendered_with_invalid_input(self):
+
+        response = self.post_invalid_input()
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'list.html')
 
-        expected_error = "Empty items will not be entered"
+    def test_form_passed_to_template_with_invalid_input(self):
 
-        self.assertContains(response, expected_error)
+        response = self.post_invalid_input()
+        self.assertIsInstance(response.context['form'], ItemForm)
+
+    def test_errors_displayed_with_invalid_input(self):
+
+        response = self.post_invalid_input()
+        self.assertContains(response, EMPTY_ITEM_ERROR)
