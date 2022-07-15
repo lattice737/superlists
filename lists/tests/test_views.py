@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from django.test import TestCase
 from django.urls import resolve
+from lists.forms import ItemForm
 
 from lists.views import home_page # deprecated for test client
 from lists.models import Item, List
@@ -17,16 +18,10 @@ class HomePageTest(TestCase):
         found = resolve("/")
         self.assertEqual(found.func, home_page)
 
-    def test_html(self):
+    def test_root_uses_item_form(self):
 
-        response = self.client.get("/")
-
-        html = response.content.decode('utf8')
-        
-        self.assertTrue(html.startswith('<!DOCTYPE html>'))
-        self.assertIn('<title>To-Do lists</title>', html)
-        self.assertTrue(html.strip().endswith('</html>'))
-        self.assertTemplateUsed(response, 'home.html')
+        response = self.client.get('/')
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 class NewListTest(TestCase):
 
