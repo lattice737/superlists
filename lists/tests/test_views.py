@@ -1,4 +1,4 @@
-from unittest import mock
+from unittest import mock, skip
 
 from django.utils.html import escape # parses str argument to HTML-escaped string
 from django.test import TestCase
@@ -165,3 +165,16 @@ class ListViewTest(TestCase):
 
         response = self.post_invalid_input()
         self.assertContains(response, EMPTY_ITEM_ERROR)
+
+    @skip
+    def test_duplicate_items_errors_displayed_on_lists_page(self):
+
+        list1 = List.objects.create()
+        item1 = Item.objects.create(list=list1, text='textey')
+
+        response = self.client.post(f"/lists/{list1.id}/", data={'text': 'textey'})
+        expected_error = "This item is already on the list"
+
+        self.assertContains(response, expected_error)
+        self.assertTemplateUsed(response, 'list.html')
+        self.assertEqual(Item.objects.all().count(), 1)
