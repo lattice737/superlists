@@ -19,7 +19,7 @@ class NewVisitorTest(FunctionalTest):
 
         # User is invited to enter a to-do item right away
         
-        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box = self.get_item_input_box()
         self.assertEqual(
             input_box.get_attribute('placeholder'),
             'Enter a to-do item'
@@ -36,7 +36,7 @@ class NewVisitorTest(FunctionalTest):
 
         # A textbox persists to invite the addition of items. User enters "Use peacock feathers to make a fly"
 
-        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box = self.get_item_input_box()
         input_box.send_keys('Use peacock feathers to make a fly')
         input_box.send_keys(Keys.ENTER)
 
@@ -51,7 +51,7 @@ class NewVisitorTest(FunctionalTest):
 
         self.browser.get(self.live_server_url)
         
-        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box = self.get_item_input_box()
         input_box.send_keys('Buy peacock feathers')
         input_box.send_keys(Keys.ENTER)
 
@@ -77,7 +77,7 @@ class NewVisitorTest(FunctionalTest):
 
         # NewUser starts a new list by entering a new item
 
-        new_input_box = self.browser.find_element_by_id("id_new_item")
+        new_input_box = self.get_item_input_box()
         new_input_box.send_keys("Buy milk")
         new_input_box.send_keys(Keys.ENTER)
 

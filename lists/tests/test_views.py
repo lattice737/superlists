@@ -29,7 +29,7 @@ class NewListTest(TestCase):
 
         self.client.post(
             "/lists/new", # no trailing slash -- action URLs that modify the database
-            data={'item_text': 'A new list item'},
+            data={'text': 'A new list item'},
         )
 
         self.assertEqual(Item.objects.count(), 1)
@@ -40,14 +40,14 @@ class NewListTest(TestCase):
 
     def test_redirect_after_POST(self):
 
-        response = self.client.post("/lists/new", data={'item_text': 'A new list item'})
+        response = self.client.post("/lists/new", data={'text': 'A new list item'})
         new_list = List.objects.first()
 
         self.assertRedirects(response, f"/lists/{new_list.id}/")
 
     def test_validation_errors_sent_back_to_home(self):
 
-        response = self.client.post('/lists/new', data={'item_text': ''})
+        response = self.client.post('/lists/new', data={'text': ''})
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
@@ -58,7 +58,7 @@ class NewListTest(TestCase):
 
     def test_no_save_invalid_items(self):
 
-        self.client.post('/lists/new', data={'item_text': ''})
+        self.client.post('/lists/new', data={'text': ''})
         
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
@@ -105,7 +105,7 @@ class ListViewTest(TestCase):
 
         self.client.post(
             f"/lists/{correct_list.id}/",
-            data={'item_text': 'A new item for an existing list'},
+            data={'text': 'A new item for an existing list'},
         )
 
         self.assertEqual(Item.objects.count(), 1)
@@ -122,7 +122,7 @@ class ListViewTest(TestCase):
 
         response = self.client.post(
             f"/lists/{correct_list.id}/",
-            data={'item_text': 'A new item for an existing list'},
+            data={'text': 'A new item for an existing list'},
         )
 
         self.assertRedirects(response, f"/lists/{correct_list.id}/")
@@ -133,7 +133,7 @@ class ListViewTest(TestCase):
 
         response = self.client.post(
             f"/lists/{list_.id}/",
-            data={'item_text': ''},
+            data={'text': ''},
         )
 
         self.assertEqual(response.status_code, 200)
