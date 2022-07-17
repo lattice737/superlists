@@ -27,11 +27,13 @@ class ItemFormTest(TestCase):
     def test_form_save_method(self):
 
         list_ = List.objects.create()
-        form = ExistingListItemForm(for_list=list_, data={'text': 'hi'})
+        form = ItemForm(data={'text': 'do me'})
 
-        new_item = form.save()
+        new_item = form.save(for_list=list_)
 
-        self.assertEqual(new_item, Item.objects.all()[0])
+        self.assertEqual(new_item, Item.objects.first())
+        self.assertEqual(new_item.text, 'do me')
+        self.assertEqual(new_item.list, list_)
 
 class ExistingListItemFormTest(TestCase):
 
@@ -58,3 +60,12 @@ class ExistingListItemFormTest(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['text'], [DUPLICATE_ITEM_ERROR])
+
+    def test_form_save_method(self):
+
+        list_ = List.objects.create()
+        form = ExistingListItemForm(for_list=list_, data={'text': 'hi'})
+
+        new_item = form.save()
+
+        self.assertEqual(new_item, Item.objects.all()[0])
