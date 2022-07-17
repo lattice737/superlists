@@ -6,6 +6,6 @@ window.Superlists.initialize = function () {
         $('.has-error').hide();
     });
     $('input[name="text"]').on('click', function () {
-        $('.has-error').hide()
-    })
+        $('.has-error').hide();
+    });
 };
