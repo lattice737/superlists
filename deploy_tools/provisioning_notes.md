@@ -22,6 +22,7 @@ e.g., on Ubuntu:
 
 * see gunicorn-systemd.template.service
 * replace SITENAME with, e.g., staging.domain.com
+* remote location /etc/systemd/system/gunicorn-SITENAME.service
 
 ## Folder structure
 
