@@ -1,5 +1,6 @@
 db.sqlite3
 __pycache__
 *.pyc
-/static
+/static/base.css
+/static/bootstrap
 geckodriver.log
