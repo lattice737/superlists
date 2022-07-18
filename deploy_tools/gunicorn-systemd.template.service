@@ -1,13 +1,13 @@
 [Unit]
-Description=Gunicorn server for staging.workspaceonline.net
+Description=Gunicorn server for DOMAIN
 
 [Service]
 Restart=on-failure
 User=nem0031
-WorkingDirectory=/home/nem0031/sites/staging.workspaceonline.net/source
+WorkingDirectory=/home/nem0031/sites/DOMAIN/source
 
 ExecStart=/home/nem0031/sites/staging.workspaceonline.net/virtualenv/bin/gunicorn \
-    --bind unix:/tmp/staging.workspaceonline.net.socket \
+    --bind unix:/tmp/DOMAIN.socket \
     superlists.wsgi:application
 
 [Install]
