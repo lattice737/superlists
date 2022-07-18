@@ -17,12 +17,13 @@ e.g., on Ubuntu:
 
 * see nginx.template.conf
 * replace SITENAME with, e.g., staging.domain.com
+* remote location: /etc/nginx/sites-available/SITENAME
 
 ## Systemd service
 
 * see gunicorn-systemd.template.service
 * replace SITENAME with, e.g., staging.domain.com
-* remote location /etc/systemd/system/gunicorn-SITENAME.service
+* remote location: /etc/systemd/system/gunicorn-SITENAME.service
 
 ## Folder structure
 

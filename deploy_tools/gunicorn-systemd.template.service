@@ -1,13 +1,13 @@
 [Unit]
-Description=Gunicorn server for DOMAIN
+Description=Gunicorn server for SITENAME
 
 [Service]
 Restart=on-failure
 User=nem0031
-WorkingDirectory=/home/nem0031/sites/DOMAIN/source
+WorkingDirectory=/home/nem0031/sites/SITENAME/source
 
-ExecStart=/home/nem0031/sites/DOMAIN/virtualenv/bin/gunicorn \
-    --bind unix:/tmp/DOMAIN.socket \
+ExecStart=/home/nem0031/sites/SITENAME/virtualenv/bin/gunicorn \
+    --bind unix:/tmp/SITENAME.socket \
     superlists.wsgi:application
 
 [Install]
